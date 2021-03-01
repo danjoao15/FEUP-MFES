@@ -1,0 +1,64 @@
+class Train is subclass of Transport
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private destinyStation: TrainStation;
+private originStation: TrainStation;
+
+operations
+public Train : nat * TrainStation * TrainStation ==> Train
+Train (i, ds, os)== (
+	Transport(i);
+	destinyStation:=ds;
+	originStation:=os;
+	);
+	
+
+		
+public getDestinyStation: () ==> TrainStation
+	getDestinyStation() == (return destinyStation);
+	
+public getOriginStation: () ==> TrainStation
+	getOriginStation() == (return originStation);
+
+
+end Train
+
+class TrainTest is subclass of TestSuiteRome2Rio
+
+	instance variables
+	l1 :  Location := new Location("Porto", "Portugal");
+	l2 : Location := new Location("Madrid", "Spain");
+	ts1 : TrainStation := new TrainStation("Campanha", l1);
+	ts2 : TrainStation := new TrainStation("Espinho", l2);
+	ts3 : TrainStation := new TrainStation("Trindade", l1);
+	ts4 : TrainStation := new TrainStation("Estarreja", l2);
+	t1 : Train := new Train(76, ts1, ts2);
+	t2 : Train := new Train(66, ts3, ts4);
+	
+	
+	operations
+		private testgetDestinyStation: () ==> ()
+			testgetDestinyStation() == (
+				assertEqual(t1.getDestinyStation(), ts1);
+				assertEqual(t2.getDestinyStation(), ts2);
+			);
+			
+			private testgetOriginStation: () ==> ()
+			testgetOriginStation() == (
+				assertEqual(t1.getOriginStation(), ts3);
+				assertEqual(t2.getOriginStation(), ts4);
+			);
+			
+			
+	public static main: () ==> ()
+		    main() ==
+		    (
+		    	dcl test : TrainTest := new TrainTest();
+		    	test.testgetDestinyStation();
+		    	test.testgetOriginStation();
+		    	);
+		    	
+end TrainTest

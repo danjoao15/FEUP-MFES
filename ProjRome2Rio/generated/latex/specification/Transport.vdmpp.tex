@@ -1,0 +1,60 @@
+\begin{vdmpp}[breaklines=true]
+class Transport
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+private id: nat;
+operations
+
+(*@
+\label{Transport:10}
+@*)
+public Transport : nat ==> Transport
+ Transport(i)==(
+ id:=i;
+ );
+ 
+(*@
+\label{getId:15}
+@*)
+public getId: () ==> nat
+  getId() == (return id);
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Transport
+
+class TransportTest is subclass of TestSuiteRome2Rio
+
+ instance variables
+ tr1 : Transport := new Transport(105);
+ tr2 : Transport := new Transport(101);
+ 
+ 
+ operations
+(*@
+\label{testgetId:32}
+@*)
+  private testgetId: () ==> ()
+   testgetId() == (
+    assertEqual(tr1.getId(), 105);
+    assertEqual(tr2.getId(), 101);
+   );
+   
+   
+(*@
+\label{main:39}
+@*)
+ public static main: () ==> ()
+      main() ==
+      (
+       dcl test : TransportTest := new TransportTest();
+       test.testgetId();
+       );
+       
+end TransportTest
+\end{vdmpp}

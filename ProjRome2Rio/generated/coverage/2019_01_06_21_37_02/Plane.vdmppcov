@@ -1,0 +1,58 @@
+class Plane is subclass of Transport
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private destinyStation: Airport;
+private originStation: Airport;
+
+operations
+public Plane : nat * Airport * Airport ==> Plane
+Plane(i, ds, os)== (
+	Transport(i);
+	destinyStation:=ds;
+	originStation:=os;
+	);
+	
+public getDestinyStation: () ==> Airport
+	getDestinyStation() == (return destinyStation);
+	
+public getOriginStation: () ==> Airport
+	getOriginStation() == (return originStation);
+		
+end Plane
+
+class PlaneTest is subclass of TestSuiteRome2Rio
+
+	instance variables
+	l1 :  Location := new Location("Porto", "Portugal");
+	l2 : Location := new Location("Madrid", "Spain");
+	a1 : Airport := new Airport("Aeroporto do Porto", l1);
+	a2 : Airport := new Airport("Aeroporto de Madrid", l2);
+	p1 : Plane := new Plane(101, a1, a2);
+	p2 : Plane := new Plane(100, a2, a1);
+	
+	operations
+		private testgetDestinyStation: () ==> ()
+			testgetDestinyStation() == (
+				assertEqual(p1.getDestinyStation(), a1);
+				assertEqual(p2.getDestinyStation(), a2);
+			);
+			
+			private testgetOriginStation: () ==> ()
+			testgetOriginStation() == (
+				assertEqual(p1.getOriginStation(), a2);
+				assertEqual(p2.getOriginStation(), a1);
+			);
+			
+			
+	public static main: () ==> ()
+		    main() ==
+		    (
+		    	dcl test : PlaneTest := new PlaneTest();
+		    	test.testgetDestinyStation();
+		    	test.testgetOriginStation();
+		    	);
+		    	
+end PlaneTest

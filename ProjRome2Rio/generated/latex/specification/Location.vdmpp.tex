@@ -1,0 +1,118 @@
+\begin{vdmpp}[breaklines=true]
+class Location
+ types
+   public String = seq of char;
+
+ instance variables
+   private city : String;
+   private country : String;
+   
+   inv city <> [];
+   inv country <> [];
+
+ operations
+   -- Create a new Location object with all necessary parameters --
+(*@
+\label{Location:14}
+@*)
+   public Location: String * String ==> Location
+    Location(c, p) == (city := c; country := p; return self)
+   pre c <> [] and p <> []; 
+  
+   -- GETS --
+  
+   -- Returns the name of the city in the Location object --
+(*@
+\label{getCity:21}
+@*)
+   public getCity: () ==> String
+    getCity() == (return city);
+    
+   -- Return the name of the country in the Location object --
+(*@
+\label{getCountry:25}
+@*)
+   public getCountry: () ==> String
+    getCountry() == (return country);
+
+   -- SETS --
+   
+   -- Changes the name of the city in the Location object --
+(*@
+\label{setCity:31}
+@*)
+   public setCity: String ==> ()
+    setCity(c) == (city := c; return)
+    pre c <> [];
+   
+   -- Changes the name of the country in the Location object --
+(*@
+\label{setCountry:36}
+@*)
+   public setCountry: String ==> ()
+    setCountry(p) == (country := p; return)
+    pre p <> [];
+   
+end Location
+
+class LocationTest is subclass of TestSuiteRome2Rio
+
+ instance variables
+ l1 :  Location := new Location("Porto", "Portugal");
+ l2 : Location := new Location("Madrid", "Spain");
+ 
+ operations
+(*@
+\label{testgetCity:49}
+@*)
+  private testgetCity: () ==> ()
+   testgetCity() == (
+    assertEqual(l1.getCity(), "Porto");
+    assertEqual(l2.getCity(), "Madrid");
+   );
+   
+(*@
+\label{testgetCountry:55}
+@*)
+   private testgetCountry: () ==> ()
+   testgetCountry() == (
+    assertEqual(l1.getCountry(), "Portugal");
+    assertEqual(l2.getCountry(), "Spain");
+   );
+   
+(*@
+\label{testsetCity:61}
+@*)
+   private testsetCity: () ==> ()
+   testsetCity() == (
+    l1.setCity("Lisbon");
+    l2.setCity("Barcelona");
+   );
+   
+(*@
+\label{testsetCountry:67}
+@*)
+   private testsetCountry: () ==> ()
+   testsetCountry() == (
+    l1.setCountry("Lusitanos");
+    l2.setCountry("Mouros");
+   );
+   
+   
+(*@
+\label{main:74}
+@*)
+ public static main: () ==> ()
+      main() ==
+      (
+       dcl test : LocationTest := new LocationTest();
+       test.testgetCity();
+       test.testgetCountry();
+       test.testsetCity();
+       test.testsetCountry();
+       
+       );
+       
+end LocationTest
+
+\end{vdmpp}

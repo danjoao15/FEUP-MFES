@@ -1,0 +1,315 @@
+class Rome2Rio
+types
+public String = seq of char;
+
+values
+-- TODO Define values here
+
+instance variables
+users: set of User;
+destinations: set of Location;
+origins: set of Location;
+planes: set of Plane;
+buses: set of Bus;
+trains: set of Train;
+user: String;
+operations
+
+public Rome2Rio : () ==> Rome2Rio
+Rome2Rio() == (
+users:={};
+destinations:={};
+origins:={};
+planes:={};
+buses:={};
+trains:={};
+user := "undefined";
+);
+
+  /*******************************************************/
+	/***************** 	 LOGIN & LOGOUT   ******************/
+	/*******************************************************/
+
+	-- Login in the application
+	public loginUser : String * String ==> bool
+	loginUser(email, password) ==
+		if getUserByEmail(email).getPassword() = password
+		then (
+			user := email;
+			return true;
+		)
+		else return false
+	pre len email > 0 and len email < 50
+		and user = "undefined";
+
+	-- Logout from the application
+	public logout : () ==> ()
+	logout() ==
+		user := "undefined"
+	pre not user = "undefined";
+
+	/*******************************************************/
+	/***************** 	 Users Management ******************/
+	/*******************************************************/
+
+	--Get user by email
+	public getUserByEmail : String ==> User
+	getUserByEmail(user) == (
+		for all u in set users do (
+			if user = u.getEmail()
+			then return u;
+			);
+		return new User();
+	);
+
+	--Get current logged in user
+	public getCurrentUser : () ==> User
+	getCurrentUser() == (
+		return getUserByEmail(user);
+	)
+	pre user <> "undefined";
+
+	-- Returns all registered users
+	pure public getUsers : () ==> set of User
+	getUsers() == return users;
+
+	--Add a user
+	public addUser: User ==> ()
+	addUser(u) == (
+		users := {u} union users
+	;);
+
+	/*******************************************************/
+	/***************** 	Search  ******************/
+	/*******************************************************/
+
+	public addPlane: Plane ==> ()
+	addPlane(p) == (
+		planes:= {p} union planes;
+		);
+
+	public addBus: Bus ==> ()
+	addBus(b) == (
+		buses:= {b} union buses;
+		);
+
+	public addTrain: Train ==> ()
+	addTrain(t) == (
+		trains:= {t} union trains;
+		);
+
+	-- Search Transportation from a place to another--
+	public getTransportByLocations: Location * Location ==> set of Transport
+	getTransportByLocations(origin, destiny)==(
+	dcl availableTransportation : set of Transport :={};
+	for all p in set planes do
+		if (origin <> p.getOriginStation().getLocation() and destiny <> p.getDestinyStation().getLocation())
+		then availableTransportation:= availableTransportation union {p};
+	for all t in set trains do
+		if (origin <> t.getOriginStation().getLocation() and destiny <> t.getDestinyStation().getLocation())
+		then availableTransportation:= availableTransportation union {t};
+	for all b in set buses do
+		if (origin <> b.getOriginStation().getLocation() and destiny <> b.getDestinyStation().getLocation())
+		then availableTransportation:= availableTransportation union {b};
+
+
+	return availableTransportation
+	)
+  pre not user = "undefined"
+  and {origin} subset origins
+  and {destiny} subset destinations;
+
+		-- Search Planes from a place to another--
+	public getPlanesByLocations: Location * Location ==> set of Plane
+	getPlanesByLocations(origin, destiny)==(
+	dcl availablePlanes : set of Plane :={};
+	for all p in set planes do
+		if (origin <> p.getOriginStation().getLocation() and destiny <> p.getDestinyStation().getLocation())
+		then availablePlanes:= availablePlanes union {p};
+
+	return availablePlanes
+	)
+  pre not user = "undefined"
+  and {origin} subset origins
+  and {destiny} subset destinations;
+
+			-- Search Trains from a place to another--
+	public getTrainsByLocations: Location * Location ==> set of Train
+	getTrainsByLocations(origin, destiny)==(
+	dcl availableTrains : set of Train :={};
+	for all t in set trains do
+		if (origin <> t.getOriginStation().getLocation() and destiny <> t.getDestinyStation().getLocation())
+		then availableTrains:= availableTrains union {t};
+
+	return availableTrains
+	)
+  pre not user = "undefined"
+  and {origin} subset origins
+  and {destiny} subset destinations;
+
+				-- Search Buses from a place to another--
+	public getBusesByLocations: Location * Location ==> set of Bus
+	getBusesByLocations(origin, destiny)==(
+	dcl availableBuses : set of Bus :={};
+	for all b in set buses do
+		if (origin <> b.getOriginStation().getLocation() and destiny <> b.getDestinyStation().getLocation())
+		then availableBuses:= availableBuses union {b};
+
+	return availableBuses
+	)
+  pre not user = "undefined"
+  and {origin} subset origins
+  and {destiny} subset destinations;
+
+
+
+	-- Search all destinies from a place r--
+		public getDestinies: Location ==> set of Location
+	getDestinies(origin)==(
+	dcl availableDestinies : set of Location :={};
+	for all p in set planes do
+		if origin <> p.getOriginStation().getLocation()
+		then availableDestinies:= availableDestinies union {p.getDestinyStation().getLocation()};
+	for all t in set trains do
+		if origin <> t.getOriginStation().getLocation()
+		then availableDestinies:= availableDestinies union {t.getDestinyStation().getLocation()};
+	for all b in set buses do
+		if origin <> b.getOriginStation().getLocation()
+		then availableDestinies:= availableDestinies union {b.getDestinyStation().getLocation()};
+
+
+	return availableDestinies
+	)
+  pre not user = "undefined"
+  and {origin} subset origins;
+
+
+end Rome2Rio
+
+class Rome2RioTest is subclass of TestSuiteRome2Rio
+	instance variables
+			r : Rome2Rio := new Rome2Rio();
+			l1 :  Location := new Location("Porto", "Portugal");
+			l2 : Location := new Location("Madrid", "Spain");
+			l3 : Location := new Location("Aveiro", "Portugal");
+			ts1 : TrainStation := new TrainStation("Campanha", l1);
+			ts2 : TrainStation := new TrainStation("Espinho", l2);
+			ts3 : TrainStation := new TrainStation("Trindade", l1);
+			ts4 : TrainStation := new TrainStation("Estarreja", l2);
+			a1 : Airport := new Airport("Aeroporto do Porto", l1);
+			a2 : Airport := new Airport("Aeroporto de Madrid", l2);
+			bs1 : BusStation := new BusStation("Aliados", l1);
+			bs2 : BusStation := new BusStation("IPO", l1);
+			bs3 : BusStation := new BusStation("Santa Catarina", l1);
+			bs4 : BusStation := new BusStation("Trindade", l1);
+			b1 : Bus := new Bus(105, bs1, bs2);
+			b2 : Bus := new Bus(205, bs3, bs4);
+			d1 : DateTime := new DateTime(2018, 12, 30, 20, 30);
+			d2 : DateTime := new DateTime(2018, 10, 30, 20, 30);
+			d3 : DateTime := new DateTime(2018, 12, 30, 21, 30);
+			p1 : Plane := new Plane(101, a1, a2);
+			p2 : Plane := new Plane(100, a2, a1);
+			u1 :  User := new User("danjoao@gmail.com", "Malhoa", "123");
+			u2 : User := new User("diogohp@gmail.com", "Palhas", "simples");
+			tr1 : Transport := new Transport(105);
+			tr2 : Transport := new Transport(101);
+			t1 : Train := new Train(76, ts1, ts2);
+			t2 : Train := new Train(66, ts3, ts4);
+
+operations
+		private testgetUserByEmail: () ==> ()
+			testgetUserByEmail() == (
+				assertEqual(r.getUserByEmail("danjoao@gmail.com"), u1);
+				assertEqual(r.getUserByEmail("diogohp@gmail.com"), u2);
+			);
+
+			private testgetCurrentUser: () ==> ()
+			testgetCurrentUser() == (
+				assertEqual(r.getCurrentUser(), u1);
+			);
+
+			private testgetUsers: () ==> ()
+			testgetUsers() == (
+				assertEqual(r.getUsers(), {u1, u2})
+				);
+				
+			private testgetTransportByLocations: () ==> ()
+			testgetTransportByLocations() == (
+				assertEqual(r.getTransportByLocations(l1,l2), {tr1});
+			);
+			
+			private testgetPlanesByLocations: () ==> ()
+			testgetPlanesByLocations() == (
+				assertEqual(r.getPlanesByLocations(l1,l2), {p1});
+			);
+			
+			private testgetTrainsByLocations: () ==> ()
+			testgetTrainsByLocations() == (
+				assertEqual(r.getTrainsByLocations(l1,l2), {t1});
+			);
+			
+			private testgetBusesByLocations: () ==> ()
+			testgetBusesByLocations() == (
+				assertEqual(r.getBusesByLocations(l1,l2), {b1});
+			);
+			
+			private testgetDestinies: () ==> ()
+			testgetDestinies() == (
+				assertEqual(r.getDestinies(l1), {l1});
+			);
+			
+			private testaddUser: () ==> ()
+				testaddUser() == (
+					r.addUser(u1);
+					r.addUser(u2);
+				);
+				
+			private testaddPlane: () ==> ()
+				testaddPlane() == (
+					r.addPlane(p1);
+					r.addPlane(p2);
+				);
+				
+			private testaddBus: () ==> ()
+				testaddBus() == (
+					r.addBus(b1);
+					r.addBus(b2);
+				);
+				
+			private testaddTrain: () ==> ()
+				testaddTrain() == (
+					r.addTrain(t1);
+					r.addTrain(t2);
+				);
+			
+			private testloginUser: () ==> ()
+				testloginUser() == (
+					assertEqual(r.loginUser("danjoao@gmail.com" , "123"), true);
+				);
+				
+			private testlogout: () ==> ()
+				testlogout() == (
+					r.logout();
+				);
+
+	public static main: () ==> ()
+		    main() ==
+		    (
+		    	dcl test : Rome2RioTest := new Rome2RioTest();
+		    	test.testgetUserByEmail();
+		    	test.testgetCurrentUser();
+		    	test.testgetUsers();
+		    	test.testgetTransportByLocations();
+		    	test.testgetPlanesByLocations();
+		    	test.testgetTrainsByLocations();
+		    	test.testgetBusesByLocations();
+		    	test.testgetDestinies();
+		    	test.testaddUser();
+		    	test.testaddPlane();
+		    	test.testaddBus();
+		    	test.testaddTrain();
+		    	test.testloginUser();
+		    	test.testlogout();
+		    	);
+
+end Rome2RioTest

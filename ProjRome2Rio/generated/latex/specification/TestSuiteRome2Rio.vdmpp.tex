@@ -1,0 +1,57 @@
+\begin{vdmpp}[breaklines=true]
+class TestSuiteRome2Rio
+operations
+   -- Simulates assertion checking by reducing it to pre-condition checking.
+   -- If 'arg' does not hold, a pre-condition violation will be signaled.
+(*@
+\label{assertTrue:5}
+@*)
+   protected assertTrue: bool ==> ()
+    assertTrue(arg) == 
+   return 
+   pre arg;
+   
+   -- Simulates assertion checking by reducing it to post-condition checking.
+   -- If values are not equal, prints a message in the console and generates 
+   -- a post-conditions violation.
+(*@
+\label{assertEqual:13}
+@*)
+   protected assertEqual: ? * ? ==> ()
+    assertEqual(expected, actual) == 
+    if expected <> actual then (
+      IO`print("Actual value (");
+      IO`print(actual); 
+      IO`print(") different from:\n");
+      IO`print("expected (");
+      IO`print(expected);
+      IO`println(")\n")
+    )
+    post expected = actual
+
+
+end TestSuiteRome2Rio
+
+class TestRome2Rio
+ operations
+(*@
+\label{main:30}
+@*)
+   public static main: () ==> ()
+      main() ==
+      (
+       new AirportTest().main();
+       new BusTest().main();
+       new BusStationTest().main();
+       new DateTimeTest().main();
+       new LocationTest().main();
+       new PlaneTest().main();
+       new TrainTest().main();
+       new TrainStationTest().main();
+       new TransportTest().main();
+       new UserTest().main();
+       new Rome2RioTest().main();
+      );
+
+end TestRome2Rio
+\end{vdmpp}

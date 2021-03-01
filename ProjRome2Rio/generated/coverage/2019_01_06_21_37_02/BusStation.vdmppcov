@@ -1,0 +1,64 @@
+class BusStation 
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private name: String;
+private location: Location;
+
+operations
+
+-- Returns the name of the airport in the Airport object --
+
+public BusStation : String*Location ==> BusStation
+BusStation (n, l)== (
+	name:=n;
+	location:=l;
+	);
+	
+public getName: () ==> String
+getName() == (return name);
+
+public getLocation: () ==> Location
+	getLocation() == (return location);
+
+end BusStation
+
+class BusStationTest is subclass of TestSuiteRome2Rio
+
+	instance variables
+	l1 :  Location := new Location("Porto", "Portugal");
+	l2 : Location := new Location("Madrid", "Spain");
+	bs1 : BusStation := new BusStation("Aliados", l1);
+	bs2 : BusStation := new BusStation("IPO", l1);
+	bs3 : BusStation := new BusStation("Santa Catarina", l1);
+	bs4 : BusStation := new BusStation("Trindade", l1);
+	
+	operations
+		private testgetName: () ==> ()
+			testgetName() == (
+				assertEqual(bs1.getName(), "Aliados");
+				assertEqual(bs2.getName(), "IPO");
+				assertEqual(bs3.getName(), "Santa Catarina");
+				assertEqual(bs4.getName(), "Trindade");
+			);
+			
+			private testgetLocation: () ==> ()
+			testgetLocation() == (
+				assertEqual(bs1.getLocation(), l1);
+				assertEqual(bs2.getLocation(), l1);
+				assertEqual(bs3.getLocation(), l1);
+				assertEqual(bs4.getLocation(), l1);
+			);
+			
+			
+	public static main: () ==> ()
+		    main() ==
+		    (
+		    	dcl test : BusStationTest := new BusStationTest();
+		    	test.testgetName();
+		    	test.testgetLocation();
+		    	);
+		    	
+end BusStationTest

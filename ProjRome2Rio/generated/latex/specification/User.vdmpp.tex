@@ -1,0 +1,140 @@
+\begin{vdmpp}[breaklines=true]
+class User
+
+types
+public String = seq of char;
+
+values
+-- TODO Define values here
+instance variables
+ email: String:="";
+ name: String:="";
+ password: String:="";
+ 
+operations
+(*@
+\label{User:14}
+@*)
+public User : String*String*String ==> User
+User (e, n, p)== (
+ email:=e;
+ name:=n;
+ password:=p
+ )
+ 
+ pre len e > 0 and len e < 256
+  and len p > 0 and len p < 30
+  and len n > 0 and len n < 50;
+  
+  -- Get email of user
+(*@
+\label{getEmail:26}
+@*)
+ pure public getEmail : () ==> String
+ getEmail() == return email;
+ 
+  -- Get name of user
+(*@
+\label{getName:30}
+@*)
+ public getName : () ==> String
+ getName() == return name;
+ 
+ -- Get password of user
+(*@
+\label{getPassword:34}
+@*)
+ public getPassword : () ==> String
+ getPassword() == return password;
+ 
+ -- Set name of user
+(*@
+\label{setName:38}
+@*)
+ public setName: String ==> ()
+ setName(n) == (
+  name := n
+ ;)
+ post name = n;
+ 
+ -- Set password of user
+(*@
+\label{setPassword:45}
+@*)
+ public setPassword: String ==> ()
+ setPassword(p) == (
+  password:= p
+ ;)
+ post password = p;
+ 
+
+end User
+
+class UserTest is subclass of TestSuiteRome2Rio
+
+ instance variables
+ u1 :  User := new User("danjoao@gmail.com", "Malhoa", "123");
+ u2 : User := new User("diogohp@gmail.com", "Palhas", "simples");
+ 
+ operations
+(*@
+\label{testgetEmail:61}
+@*)
+  private testgetEmail: () ==> ()
+   testgetEmail() == (
+    assertEqual(u1.getEmail(), "danjoao@gmail.com");
+    assertEqual(u2.getEmail(), "diogohp@gmail.com");
+   );
+   
+(*@
+\label{testgetName:67}
+@*)
+   private testgetName: () ==> ()
+   testgetName() == (
+    assertEqual(u1.getName(), "Malhoa");
+    assertEqual(u2.getName(), "Palhas");
+   );
+   
+(*@
+\label{testgetPassword:73}
+@*)
+   private testgetPassword: () ==> ()
+   testgetPassword() == (
+    assertEqual(u1.getPassword(), "123");
+    assertEqual(u2.getPassword(), "simples");
+   );
+   
+(*@
+\label{testsetName:79}
+@*)
+    private testsetName: () ==> ()
+   testsetName() == (
+    u1.setName("Ana Malhoa");
+    u2.setName("Palhinhas");
+   );
+   
+(*@
+\label{testsetPassword:85}
+@*)
+   private testsetPassword: () ==> ()
+   testsetPassword() == (
+    u1.setPassword("321");
+    u2.setPassword("dificil");
+   );
+   
+   
+(*@
+\label{main:92}
+@*)
+ public static main: () ==> ()
+      main() ==
+      (
+       dcl test : UserTest := new UserTest();
+       test.testgetEmail();
+       test.testgetName();
+       test.testsetName();
+       test.testsetPassword();
+       );
+       
+end UserTest
+\end{vdmpp}

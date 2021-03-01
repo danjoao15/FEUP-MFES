@@ -1,0 +1,87 @@
+\begin{vdmpp}[breaklines=true]
+class TrainStation 
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private name:String;
+private location: Location;
+
+operations
+
+-- Returns the name of the airport in the Airport object --
+
+(*@
+\label{TrainStation:14}
+@*)
+public TrainStation : String*Location ==> TrainStation
+TrainStation (n, l)== (
+ name:=n;
+ location:=l;
+ );
+ 
+(*@
+\label{getName:20}
+@*)
+public getName: () ==> String
+getName() == (return name);
+
+(*@
+\label{getLocation:23}
+@*)
+public getLocation: () ==> Location
+getLocation() == (return location);
+    
+
+end TrainStation
+
+class TrainStationTest is subclass of TestSuiteRome2Rio
+
+ instance variables
+ l1 :  Location := new Location("Porto", "Portugal");
+ l2 : Location := new Location("Madrid", "Spain");
+ l3 : Location := new Location("Aveiro", "Portugal");
+ ts1 : TrainStation := new TrainStation("Campanha", l1);
+ ts2 : TrainStation := new TrainStation("Espinho", l2);
+ ts3 : TrainStation := new TrainStation("Trindade", l1);
+ ts4 : TrainStation := new TrainStation("Estarreja", l2);
+ 
+ 
+ operations
+(*@
+\label{testgetName:42}
+@*)
+  private testgetName: () ==> ()
+   testgetName() == (
+    assertEqual(ts1.getName(), "Campanha");
+    assertEqual(ts2.getName(), "Espinho");
+    assertEqual(ts3.getName(), "Trindade");
+    assertEqual(ts4.getName(), "Estarreja");
+   );
+   
+(*@
+\label{testgetLocation:50}
+@*)
+   private testgetLocation: () ==> ()
+   testgetLocation() == (
+    assertEqual(ts1.getLocation(), l1);
+    assertEqual(ts2.getLocation(), l2);
+    assertEqual(ts3.getLocation(), l1);
+    assertEqual(ts4.getLocation(), l2);
+   );
+   
+   
+(*@
+\label{main:59}
+@*)
+ public static main: () ==> ()
+      main() ==
+      (
+       dcl test : TrainStationTest := new TrainStationTest();
+       test.testgetName();
+       test.testgetLocation();
+       );
+       
+end TrainStationTest
+\end{vdmpp}

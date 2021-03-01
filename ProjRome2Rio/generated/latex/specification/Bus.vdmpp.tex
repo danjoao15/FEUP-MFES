@@ -1,0 +1,81 @@
+\begin{vdmpp}[breaklines=true]
+class Bus is subclass of Transport 
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private destinyStation: BusStation;
+private originStation: BusStation;
+
+operations
+(*@
+\label{Bus:11}
+@*)
+public Bus : nat * BusStation * BusStation ==> Bus
+Bus (i, ds, os)== (
+ Transport(i);
+ destinyStation:=ds;
+ originStation:=os;
+ );
+
+
+(*@
+\label{getDestinyStation:19}
+@*)
+public getDestinyStation: () ==> BusStation
+ getDestinyStation() == (return destinyStation);
+ 
+(*@
+\label{getOriginStation:22}
+@*)
+public getOriginStation: () ==> BusStation
+ getOriginStation() == (return originStation);
+  
+end Bus
+
+class BusTest is subclass of TestSuiteRome2Rio
+
+ instance variables
+ l1 :  Location := new Location("Porto", "Portugal");
+ l2 : Location := new Location("Madrid", "Spain");
+ bs1 : BusStation := new BusStation("Aliados", l1);
+ bs2 : BusStation := new BusStation("IPO", l1);
+ bs3 : BusStation := new BusStation("Santa Catarina", l1);
+ bs4 : BusStation := new BusStation("Trindade", l1);
+ b1 : Bus := new Bus(105, bs1, bs2);
+ b2 : Bus := new Bus(205, bs3, bs4);
+ 
+ operations
+(*@
+\label{testgetDestinyStation:40}
+@*)
+  private testgetDestinyStation: () ==> ()
+   testgetDestinyStation() == (
+    assertEqual(b1.getDestinyStation(), bs1);
+    assertEqual(b2.getDestinyStation(), bs3);
+   );
+   
+(*@
+\label{testgetOriginStation:46}
+@*)
+   private testgetOriginStation: () ==> ()
+   testgetOriginStation() == (
+    assertEqual(b1.getOriginStation(), bs2);
+    assertEqual(b2.getOriginStation(), bs4);
+   );
+   
+   
+(*@
+\label{main:53}
+@*)
+ public static main: () ==> ()
+      main() ==
+      (
+       dcl test : BusTest := new BusTest();
+       test.testgetDestinyStation();
+       test.testgetOriginStation();
+       );
+       
+end BusTest
+\end{vdmpp}
